@@ -11,7 +11,6 @@ const port = process.env.PORT || 4000;
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 // TODO
-// Add rate limiting for API calls
 // Create seperate routes for generate story and image to allow decoupling API calls
 // Parse through response to generate more individualized stories images (will increase cost)
 // Allow choosing style of image generation (e.g. cartoon, realistic, etc.)
