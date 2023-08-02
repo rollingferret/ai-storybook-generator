@@ -1,0 +1,56 @@
+# Directories
+node_modules/
+dist/
+build/
+out/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Editor-specific
+*.sublime-project
+*.sublime-workspace
+*.idea/
+*.vscode/
+
+# Compiled files
+*.log
+*.bak
+*.tmp
+
+# Dependency files
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS generated files
+Thumbs.db
+
+# Logs and backups
+*.log*
+*.log
+*.bak
+*.backup
+*.tar
+*.gz
+
+# Build and compiled files
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+*.pyo
+
+# Cache and temp files
+.cache/
+*.swp
+*.tmp
