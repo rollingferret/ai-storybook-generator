@@ -9,7 +9,10 @@ const port = 3000; // Replace with your desired port
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 // TODO
-// 
+// Create seperate routes for generate story and image to allow decoupling API calls
+// Parse through response to generate more individualized stories images (will increase cost)
+// Allow choosing style of image generation (e.g. cartoon, realistic, etc.)
+// Do to costs for multiple API calls, potentially look into a local hosted model
 
 // Interfaces
 interface StoryRequest {
@@ -58,9 +61,10 @@ const generateImage = async (story: string): Promise<string> => {
       // Replace all occurrences of '\\n' with an empty string
       const sanitizedStory = story.replace(/\n/g, '');
   
-      // Truncate the story if needed
+      // Truncate the story as needed
       const maxPromptLength = 50;
       let truncatedStory = sanitizedStory.length > maxPromptLength ? sanitizedStory.slice(0, maxPromptLength) : sanitizedStory; 
+
       // Create the image generation request
       truncatedStory = truncatedStory + ' draw in cartoon style suitable for children';
       const requestData = {
