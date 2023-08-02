@@ -2,17 +2,30 @@ require('dotenv').config();
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import axios, { AxiosResponse } from 'axios';
+import rateLimit from 'express-rate-limit';
+
 
 const app = express();
-const port = 3000; // Replace with your desired port
+const port = process.env.PORT || 4000;
 
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 // TODO
+// Add rate limiting for API calls
 // Create seperate routes for generate story and image to allow decoupling API calls
 // Parse through response to generate more individualized stories images (will increase cost)
 // Allow choosing style of image generation (e.g. cartoon, realistic, etc.)
 // Do to costs for multiple API calls, potentially look into a local hosted model
+
+// Rate limiting configuration
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // requests per windowMs
+});
+
+// Apply rate limiting to all requests
+app.use(limiter);
+
 
 // Interfaces
 interface StoryRequest {
