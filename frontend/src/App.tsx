@@ -38,21 +38,29 @@ function App(): Component {
           },
           body: JSON.stringify({ prompt: storyPrompt(), name: name() }),
         });
-
+  
         if (!response.ok) {
-          throw new Error("Error generating the story");
+          if (response.status === 429) {
+            // Rate limit exceeded
+            setError(
+              "Rate limit exceeded. Please try again later after 10 minutes."
+            );
+          } else {
+            throw new Error("Error generating the story");
+          }
+        } else {
+          // No rate limit error, process the data
+          const data = await response.json();
+          setLeftContent(data.imageUrl);
+          setRightHeader("Generated Story");
+          setRightContent(data.story);
         }
-
-        const data = await response.json();
-        setLeftContent(data.imageUrl);
-        setRightHeader("Generated Story");
-        setRightContent(data.story);
-        setLoading(false);
       } catch (error) {
         console.error(error);
         setError(
           "An error occurred while generating the story. Please try again later."
         );
+      } finally {
         setLoading(false);
       }
     }
@@ -153,6 +161,9 @@ function App(): Component {
               >
                 OK
               </button>
+              {error() && ( // Display error message if there's a general error
+                <p class="text-red-800 mt-2">{error()}</p>
+              )}
             </form>
           )}
           {rightHeader() === "Story Prompt" && (
@@ -179,7 +190,8 @@ function App(): Component {
           )}
           {rightHeader() === "Generated Story" && (
             <div class="w-full flex flex-col items-center space-y-4 mt-2 flex-grow max-h-[600px]">
-              <div class="w-full border border-gray-300 p-4 rounded-lg overflow-auto">
+              <div class="w-full border border-gray-300 p-4 rounded-lg overflow-hidden">
+                {/* Use "overflow-hidden" to hide the scroll bar */}
                 <p class="text-base">{rightContent()}</p>
               </div>
               <div class="flex-grow"></div>
@@ -189,6 +201,9 @@ function App(): Component {
               >
                 Read a New Story
               </button>
+              {error() && ( // Display error message if there's a general error
+                <p class="text-red-800 mt-2">{error()}</p>
+              )}
             </div>
           )}
         </div>

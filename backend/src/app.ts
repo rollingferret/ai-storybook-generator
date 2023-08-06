@@ -18,8 +18,11 @@ const openaiApiKey = process.env.OPENAI_API_KEY;
 
 // Rate limiting configuration
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 15 minutes
-  max: 1, // requests per windowMs put back to 10 later
+  windowMs: 15 * 60 * 1000, // 10 minutes
+  max: 5, // requests per windowMs put back to 10 later
+  handler: (req, res) => {
+    res.status(429).json({ error: 'Too many requests. Please try again later.' });
+  },
 });
 
 // Add cors middleware to your Express app
