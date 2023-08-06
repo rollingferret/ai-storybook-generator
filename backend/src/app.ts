@@ -113,6 +113,7 @@ app.post('/generate-story', async (req: Request<{}, {}, StoryRequest>, res: Resp
     try {
       // For testing purposes, we'll hardcode a sample prompt
       const samplePrompt = "tell me a story about poop...";
+      console.log('hey, hit the backend')
   
       // Request data for the chat completion
       const requestData = {
@@ -129,7 +130,7 @@ app.post('/generate-story', async (req: Request<{}, {}, StoryRequest>, res: Resp
       // const imageUrl = await generateImage(response);
 
       const response = "Once upon a time, in a magical forest, there lived a mischievous little creature named Poopsie. Poopsie was a poop fairy who loved spreading laughter and joy. Every night, she sprinkled a pinch of sparkly poop dust, turning everyone's frowns upside down. And so, happiness bloomed in the enchanted forest forever. The end.";
-      const imageUrl = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-vQKiveuZlQMSPacgeUyDvlyp/user-mYxc6i3whTWpcscnUOm0c2U6/img-cQuVbVmVi70YuM0XysORTWgs.png?st=2023-08-03T06%3A31%3A41Z&se=2023-08-03T08%3A31%3A41Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-08-03T05%3A46%3A00Z&ske=2023-08-04T05%3A46%3A00Z&sks=b&skv=2021-08-06&sig=71am7j2gwkHPMw0v1WpJzKvQ3tT/AzGCdcDnjiEIc6o%3D"
+      const imageUrl = "https://i.imgur.com/jwp9SpW.jpeg"
 
   
       const storyData: StoryResponse = { story: response, imageUrl };
