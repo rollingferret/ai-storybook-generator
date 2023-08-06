@@ -18,8 +18,8 @@ const openaiApiKey = process.env.OPENAI_API_KEY;
 
 // Rate limiting configuration
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // requests per windowMs put back to 10 later
+  windowMs: 1 * 60 * 1000, // 15 minutes
+  max: 1, // requests per windowMs put back to 10 later
 });
 
 // Add cors middleware to your Express app
@@ -32,6 +32,7 @@ app.use(limiter);
 // Interfaces
 interface StoryRequest {
   prompt: string;
+  name: string;
 }
 
 interface StoryResponse {
@@ -109,40 +110,55 @@ const generateImage = async (story: string): Promise<string> => {
 
 
 // Route to generate a story using the OpenAI API
-app.post('/generate-story', async (req: Request<{}, {}, StoryRequest>, res: Response<StoryResponse | ErrorResponse>) => {
+app.post(
+  "/generate-story",
+  async (
+    req: Request<{}, {}, StoryRequest>,
+    res: Response<StoryResponse | ErrorResponse>
+  ) => {
     try {
-      // For testing purposes, we'll hardcode a sample prompt
-      const samplePrompt = "tell me a story about poop...";
-      console.log('hey, hit the backend')
-  
+      let { name, prompt } = req.body; // Get the name and story prompt from the request body
+
+      if (!name || !prompt) {
+        return res
+          .status(400)
+          .json({ error: "Please provide both a name and a story prompt" });
+      }
+
+      prompt = prompt + ' use the name ' + name + ' in the story'; // Add the name to the story prompt
+
       // Request data for the chat completion
       const requestData = {
-        model: "gpt-3.5-turbo", // Replace with the desired model ID
+        model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: "You are a children's book writer, please spell check before returning a story. Aim for 50 words and finish the story." },
-          { role: "user", content: samplePrompt }
+          {
+            role: "system",
+            content:
+              "You are a children's book writer, please spell check before returning a story. Aim for 50 words and finish the story.",
+          },
+          { role: "user", content: prompt }, // Include the name and prompt in the user message
         ],
         max_tokens: 200,
-        temperature: 0.7
+        temperature: 0.7,
       };
-     
-      // const response = await generateStory(requestData);
-      // const imageUrl = await generateImage(response);
 
-      const response = "Once upon a time, in a magical forest, there lived a mischievous little creature named Poopsie. Poopsie was a poop fairy who loved spreading laughter and joy. Every night, she sprinkled a pinch of sparkly poop dust, turning everyone's frowns upside down. And so, happiness bloomed in the enchanted forest forever. The end.";
-      const imageUrl = "https://i.imgur.com/jwp9SpW.jpeg"
+      // Generate the story
+      const response = await generateStory(requestData);
 
-  
+      // Generate the image based on the generated story
+      const imageUrl = await generateImage(response);
+
       const storyData: StoryResponse = { story: response, imageUrl };
       res.json(storyData);
     } catch (error) {
       console.error(error);
-  
+
       // Return the error response
-      const errorResponse: ErrorResponse = { error: 'Something went wrong' };
+      const errorResponse: ErrorResponse = { error: "Something went wrong" };
       res.status(500).json(errorResponse);
     }
-});
+  }
+);
 
 app.listen(port, () => {
   console.log(`Backend server is running on http://localhost:${port}`);
