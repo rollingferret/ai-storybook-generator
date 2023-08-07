@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import axios, { AxiosResponse } from 'axios';
 import rateLimit from 'express-rate-limit';
 const cors = require('cors'); // Import the 'cors' package
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -16,8 +17,8 @@ const openaiApiKey = process.env.OPENAI_API_KEY;
 // Allow choosing style of image generation (e.g. cartoon, realistic, etc.)
 // Do to costs for multiple API calls, potentially look into a local hosted model
 
-// Rate limiting configuration
-const limiter = rateLimit({
+// Create a separate rate limiter only for the generate-story POST route
+const generateStoryLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 10 minutes
   max: 5, // requests per windowMs put back to 10 later
   handler: (req, res) => {
@@ -29,8 +30,10 @@ const limiter = rateLimit({
 app.use(cors());
 
 // Apply rate limiting to all requests
-app.use(limiter);
+app.post('/generate-story', generateStoryLimiter);
 
+// Serve static files from the "build" directory (frontend)
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Interfaces
 interface StoryRequest {
@@ -162,6 +165,11 @@ app.post(
     }
   }
 );
+
+// Route to handle the root path and serve the frontend index.html
+app.get('/', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Backend server is running on http://localhost:${port}`);

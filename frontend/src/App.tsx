@@ -31,7 +31,7 @@ function App(): Component {
     if (storyPrompt()) {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:5000/generate-story", {
+        const response = await fetch("/generate-story", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,6 +72,8 @@ function App(): Component {
     setRightContent(
       "Please input your name and story idea and we'll generate a story with an image for you!"
     );
+    setStoryPrompt("");
+    setName("");
   };
 
   return (
@@ -161,9 +163,6 @@ function App(): Component {
               >
                 OK
               </button>
-              {error() && ( // Display error message if there's a general error
-                <p class="text-red-800 mt-2">{error()}</p>
-              )}
             </form>
           )}
           {rightHeader() === "Story Prompt" && (
@@ -201,9 +200,6 @@ function App(): Component {
               >
                 Read a New Story
               </button>
-              {error() && ( // Display error message if there's a general error
-                <p class="text-red-800 mt-2">{error()}</p>
-              )}
             </div>
           )}
         </div>
