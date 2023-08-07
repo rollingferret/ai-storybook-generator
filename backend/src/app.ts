@@ -167,7 +167,7 @@ app.post(
 );
 
 // Route to handle the root path and serve the frontend index.html
-app.get('/', (req: Request, res: Response) => {
+app.get('*', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 

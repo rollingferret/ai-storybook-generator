@@ -183,7 +183,7 @@ function App(): Component {
                 }`}
                 disabled={loading()} // Disable the button while loading is true
               >
-                Generate Story
+                Generate Short Story
               </button>
             </form>
           )}
